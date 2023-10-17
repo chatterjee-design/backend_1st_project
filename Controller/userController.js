@@ -1,22 +1,24 @@
 const User = require("../userSchema/schema.js");
 
-exports.home = (req, res) => {
+ const home = (req, res) => {
   res.send("welcome to the home page");
 };
 
 // register a user
-exports.registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     if (!email || !name || !password) {
+      
       throw new Error("All fields are required");
     }
     const userExists = await User.findOne({ email });
     if (userExists) {
+      
       throw new Error("User already exists");
     } else {
       const user = await User.create({ name, email, password });
-      console.log("success");
+    
       res.status(200).json({
         success: true,
         message: "User created successfully",
@@ -24,8 +26,8 @@ exports.registerUser = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
-    res.status(400).json({
+   
+    return res.status(400).json({
       success: false,
       message: error.message,
     });
@@ -33,7 +35,7 @@ exports.registerUser = async (req, res) => {
 };
 
 // login a user
-exports.loginUser = async (req, res) => {
+const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -47,22 +49,23 @@ exports.loginUser = async (req, res) => {
           message: "User Login successfully",
         });
       } else {
-        res.status(400).json({
+        return res.status(400).json({
           success: false,
           message: "invalid email or password",
         });
       }
     } else {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: 'please enter a valid email or password',
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: error.message,
     });
   }
 };
+ module.exports = { home, registerUser, loginUser}
